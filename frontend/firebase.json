@@ -30,7 +30,8 @@
     },
     "functions": {
       "predeploy": [
-       
+        "npm --prefix ./functions/ install",
+        "npm --prefix ./functions/ run test"
       ],
       "source": "functions"
     }

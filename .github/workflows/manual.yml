@@ -31,15 +31,6 @@ jobs:
   build_and_deploy_cloud_function:
     runs-on: ubuntu-latest
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-
-    # Runs a single command using the runners shell
-    #We need to goto our functions folder to deploy
-    - name: Install npm packages
-      run: |
-        cd ./frontend/functions
-        npm install
     # deploy to firebase
     - name:  Deploy to Firebase
       uses: w9jds/firebase-action@master
@@ -47,11 +38,14 @@ jobs:
           args: functions:config:set CMC_KEY=${{ secrets.CMC_KEY }} FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} ; firebase deploy --only functions
       env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          PROJECT_PATH : ./
           
   # DEPLOY WEBSITE        
   deploy_web:
     name: Deploy Static Web to Firebase Hosting
-    needs: build_web
+    needs: 
+      - build_web
+      - build_and_deploy_cloud_function
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
