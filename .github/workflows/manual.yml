@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: cd ./frontend && npm install
       - name: Build
-        run: npm run build
+        run: cd ./frontend && npm run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
@@ -29,6 +29,7 @@ jobs:
           path: ./frontend/dist/
   # BUILD AND DEPLOY CLOUD FUNCTION
   build_and_deploy_cloud_function:
+    name: Build and Deploy Cloud Function
     runs-on: ubuntu-latest
     steps:
     # deploy to firebase
@@ -38,7 +39,7 @@ jobs:
           args: functions:config:set CMC_KEY=${{ secrets.CMC_KEY }} FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} ; firebase deploy --only functions
       env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-          PROJECT_PATH : ./
+          PROJECT_PATH : ./frontend/
           
   # DEPLOY WEBSITE        
   deploy_web:
