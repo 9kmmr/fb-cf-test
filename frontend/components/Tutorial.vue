@@ -115,9 +115,7 @@
 </template>
 
 <script>
-
-
-
+const finageApiKey = process.env.finageApiKey;
 export default {
   name: 'NuxtTutorial',
   props: {
@@ -165,7 +163,7 @@ export default {
       });
     },
     fetchCoins(){
-      return this.$axios.$get(`https://api.finage.co.uk/list/cryptocurrency?apikey=API_KEYTS5Q5H4EBFHIHT4WK6KB583OZ2HS8ZJJ&limit=50`, {
+      return this.$axios.$get(`https://api.finage.co.uk/list/cryptocurrency?apikey=${finageApiKey}&limit=50`, {
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
