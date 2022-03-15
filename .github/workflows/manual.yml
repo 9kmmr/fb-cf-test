@@ -39,6 +39,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout Repo
       uses: actions/checkout@master
+
+    - name: Install Dependencies
+      run: npm install
+      working-directory: ./frontend/functions
     
     # deploy to firebase
     - name:  Deploy to Firebase
@@ -47,7 +51,7 @@ jobs:
           args: functions:config:set CMC_KEY=${{ secrets.CMC_KEY }} FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} ; firebase deploy --only functions
       env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-          PROJECT_PATH: ./frontend/
+          PROJECT_PATH: './frontend/'
 
 
   # DEPLOY WEBSITE        
