@@ -19,14 +19,14 @@ jobs:
           touch .env
           echo FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} >> .env
       - name: Install Dependencies
-        run: npm install
+        run: cd ./frontend && npm install
       - name: Build
-        run: npm run build-prod
+        run: npm run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: ./frontend
+          path: ./frontend/dist/
   # BUILD AND DEPLOY CLOUD FUNCTION
   build_and_deploy_cloud_function:
     runs-on: ubuntu-latest
