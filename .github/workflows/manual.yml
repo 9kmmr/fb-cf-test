@@ -43,12 +43,19 @@ jobs:
     - name: Install Dependencies
       run: npm install
       working-directory: ./frontend/functions
-    
+      
+    - name: Create env file
+      working-directory: ./frontend/functions
+      run: |
+        touch .env
+        echo CMC_KEY=${{ secrets.CMC_KEY }} >> .env
+        echo FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} >> .env        
+      
     # deploy to firebase
     - name:  Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
-          args: functions:config:set CMC_KEY=${{ secrets.CMC_KEY }} FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} ; firebase deploy --only functions
+          args: deploy --only functions
       env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
           PROJECT_PATH: './frontend/'
