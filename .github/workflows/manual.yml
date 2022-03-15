@@ -1,0 +1,69 @@
+name: Deploy to FireBase Hosting and Cloud Function
+
+on:
+  push:
+    branches:
+      - main   
+
+jobs:
+  # BUILD STATIC WEBSITE
+  build_web:
+    name: Build Project To Use On Hosting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@main
+      - name: create env file
+        run: |
+          cd ./frontend
+          touch .env
+          echo FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} >> .env
+      - name: Install Dependencies
+        run: npm install
+      - name: Build
+        run: npm run build-prod
+      - name: Archive Production Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: dist
+          path: ./frontend
+  # BUILD AND DEPLOY CLOUD FUNCTION
+  build_and_deploy_cloud_function:
+    runs-on: ubuntu-latest
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # Runs a single command using the runners shell
+    #We need to goto our functions folder to deploy
+    - name: Install npm packages
+      run: |
+        cd ./frontend/functions
+        npm install
+    # deploy to firebase
+    - name:  Deploy to Firebase
+      uses: w9jds/firebase-action@master
+      with:
+          args: functions:config:set CMC_KEY=${{ secrets.CMC_KEY }} FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} ; firebase deploy --only functions
+      env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          
+  # DEPLOY WEBSITE        
+  deploy_web:
+    name: Deploy Static Web to Firebase Hosting
+    needs: build_web
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: dist
+          path: dist
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
