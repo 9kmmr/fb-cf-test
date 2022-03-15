@@ -12,27 +12,32 @@ jobs:
   build_web:
     name: Build Project To Use On Hosting
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - name: Checkout Repo
         uses: actions/checkout@main
       - name: create env file
-        run: |
-          cd ./frontend
+        run: |          
           touch .env
           echo FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} >> .env
       - name: Install Dependencies
-        run: cd ./frontend ; npm install
+        run:  npm install
       - name: Build
-        run: cd ./frontend ; npm run build
+        run:  npm run build
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
           name: dist
-          path: ./frontend/dist/
+          path: dist
   # BUILD AND DEPLOY CLOUD FUNCTION
   build_and_deploy_cloud_function:
     name: Build and Deploy Cloud Function
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps: 
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Checkout Repo
@@ -45,7 +50,6 @@ jobs:
           args: functions:config:set CMC_KEY=${{ secrets.CMC_KEY }} FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} ; firebase deploy --only functions
       env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-          PROJECT_PATH: ./frontend
 
   # DEPLOY WEBSITE        
   deploy_web:
