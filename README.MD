@@ -10,3 +10,7 @@
 
 ## BUILD
 ` cd frontend && npm run build`
+
+## Test cloud function
+
+` cd frontend/functions && npm run test`
