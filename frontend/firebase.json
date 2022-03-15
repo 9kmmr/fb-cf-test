@@ -1,40 +1,33 @@
 {
-    "hosting": {
-      "public": "dist",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "/api/v1/**",
-          "function": "webApi"
-        },
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "headers": [
-        {
-          "source": "**/*.@(jpg|jpeg|gif|png|svg|js|css)",
-          "headers": [
-            {
-              "key": "Cache-Control",
-              "value": "max-age=8380800"
-            }
-          ]
-        }
-      ]
-    },
-    "functions": {
-      "predeploy": [
-        "npm --prefix ./functions/ install",
-        "npm --prefix ./functions/ run test"
-      ],
-      "source": "functions",
-      "runtime": "nodejs16"
-    }
+  "hosting": {
+    "public": "dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [{
+        "source": "/v1/**",
+        "function": "api"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [{
+      "source": "**/*.@(jpg|jpeg|gif|png|svg|js|css)",
+      "headers": [{
+        "key": "Cache-Control",
+        "value": "max-age=8380800"
+      }]
+    }]
+  },
+  "functions": {
+    "predeploy": [
+
+    ],
+    "source": "functions",
+    "runtime": "nodejs16"
   }
-  
+}
