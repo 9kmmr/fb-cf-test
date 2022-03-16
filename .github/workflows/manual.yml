@@ -39,7 +39,7 @@ jobs:
         name: Deploy to Firebase
         uses: "google-github-actions/deploy-cloud-functions@v0"
         with:
-          name: "api"
+          name: "coins"
           runtime: "nodejs16"
           source_dir: "./frontend/functions"      
 

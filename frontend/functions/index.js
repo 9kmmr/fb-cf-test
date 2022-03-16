@@ -4,7 +4,7 @@ require("dotenv").config();
 const cmc_api_key = process.env.CMC_KEY;
 const finage_api_key = process.env.FINAGE_API_KEY;
 
-exports.api =  functions.https('coins', async (req, res) => {
+exports.coins =  functions.https.onRequest(async (req, res) => {
 
   res.set('Access-Control-Allow-Origin', '*');
   if (req.method === 'OPTIONS') {
