@@ -8,29 +8,10 @@ on:
       - "**/README.MD"
 
 jobs:
-  # JOB to run change detection
-  changes:
-    runs-on: ubuntu-latest
-    # Set job outputs to values from filter step
-    outputs:
-      cloudfunction: ${{ steps.filter.outputs.cloudfunction }}
-      website: ${{ steps.filter.outputs.website }}
-    steps:
-    - uses: actions/checkout@v2    
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          cloudfunction:
-            - './frontend/functions/**'
-          website:
-            - './frontend/**'
   # BUILD AND DEPLOY CLOUD FUNCTION
   build_and_deploy_cloud_function:
     name: Build and Deploy Cloud Function
     runs-on: ubuntu-latest
-    needs: changes
-    if: ${{ needs.changes.outputs.cloudfunction == 'true' }}
     outputs:
       apiurl: ${{ steps.deploy_cloud_function.outputs.url }}
     steps:
@@ -66,10 +47,7 @@ jobs:
   build_web:
     name: Build Project To Use On Hosting
     runs-on: ubuntu-latest
-    needs: 
-      - changes
-      - build_and_deploy_cloud_function
-    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    needs: build_and_deploy_cloud_function
     defaults:
       run:
         working-directory: frontend
