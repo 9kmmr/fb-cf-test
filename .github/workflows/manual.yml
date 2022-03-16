@@ -12,6 +12,8 @@ jobs:
   build_and_deploy_cloud_function:
     name: Build and Deploy Cloud Function
     runs-on: ubuntu-latest
+    outputs:
+      apiurl: ${{ steps.deploy_cloud_function.outputs.url }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout Repo
@@ -28,18 +30,18 @@ jobs:
           echo CMC_KEY=${{ secrets.CMC_KEY }} >> .env
           echo FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} >> .env
 
-      - id: "auth"
+      - id: auth
         uses: "google-github-actions/auth@v0"
         with:
           credentials_json: "${{ secrets.GCP_SA_KEY }}"
       # deploy to firebase
-      - id: "deploy_cloud_function"
+      - id: deploy_cloud_function
         name: Deploy to Firebase
         uses: "google-github-actions/deploy-cloud-functions@v0"
         with:
           name: "api"
           runtime: "nodejs16"
-          source_dir: "./frontend/functions"
+          source_dir: "./frontend/functions"      
 
   # BUILD STATIC WEBSITE
   build_web:
@@ -56,7 +58,7 @@ jobs:
         run: |
           touch .env
           echo FINAGE_API_KEY=${{ secrets.FINAGE_API_KEY }} >> .env
-          echo CLOUD_FUNCTION_API_URL=${{ needs.build_and_deploy_cloud_function.steps.deploy_cloud_function.outputs.url }} >> .env
+          echo CLOUD_FUNCTION_API_URL=${{ needs.build_and_deploy_cloud_function.outputs.apiurl }} >> .env
       - name: Install Dependencies
         run: npm install
       - name: Build
