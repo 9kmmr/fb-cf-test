@@ -66,6 +66,7 @@ jobs:
         with:
           name: dist
           path: ./frontend/dist
+          retention-days: 5
 
   # DEPLOY WEBSITE
   deploy_web:
@@ -81,10 +82,11 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: dist
-          path: dist
+          path: ./frontend/dist
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
-          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}          
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          PROJECT_PATH: "./frontend/"
