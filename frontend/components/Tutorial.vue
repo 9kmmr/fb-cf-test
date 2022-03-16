@@ -493,13 +493,34 @@ export default {
     animation: none;
     color: rgba(1, 3, 78, 0.9);
   }
-  .icon {
-    display: inline-block;
+  /* .icon {
     min-width: 28px;
     height: 28px;
     background-size:     cover;                
     background-repeat:   no-repeat;
     background-position: center center;
+  } */
+  .icon {
+    display: inline-block;
+    min-width: 34px;
+    height: 34px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    margin-right: 10px;
+    &.aave {
+      background-image: url('./../static/aave.png');
+    }
+    &.algo {
+      background-image: url('./../static/algo.png');
+    }
+    &.bch {
+      background-image: url('./../static/bch.png');
+    }
+    &.bnb {
+      background-image: url('./../static/bnb.png');
+    }
   }
   .figures {
     display: inline-flex;
