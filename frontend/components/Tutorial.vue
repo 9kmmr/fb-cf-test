@@ -117,11 +117,11 @@
                       "
                     >
                       <i
+                        :id="index.symbol.toUpperCase()"
                         class="icon"
                         :class="
                           index.icon ? index.icon : index.symbol.toLowerCase()
                         "
-                        :id="`${index.symbol.toUpperCase()}`"
                       />
                       <!-- <i v-else class="icon" :style="{backgroundImage:`url(${index.thumbnail})`}" /> -->
                       <!-- :style="{backgroundImage:`url(./_nuxt/assets/${index.icon}.png)`}" would be nice if all imgs were same type png/svg-->
@@ -170,6 +170,7 @@
                 <div
                   class="icon"
                   :class="index.icon ? index.icon : index.symbol.toLowerCase()"
+                  :id="index.symbol.toUpperCase()"
                 />
                 <h4>
                   {{ index.name
@@ -216,6 +217,7 @@
             /></svg
         ></a>
       </div>
+      <infinite-loading @infinite="lazyLoadCrypto"></infinite-loading> 
     </div>
   </div>
 </template>
@@ -223,8 +225,12 @@
 <script>
 const finageApiKey = process.env.finageApiKey;
 const cloudFunctionAPIUrl = process.env.apiUrl;
+import InfiniteLoading from 'vue-infinite-loading';
 export default {
   name: "NuxtTutorial",
+  components: {
+    InfiniteLoading,
+  },
   props: {
     type: {
       type: String,
@@ -239,6 +245,7 @@ export default {
     return {
       data: [],
       coins: [],
+      page: 1,
       mobileScreen: false,
     };
   },
@@ -286,17 +293,38 @@ export default {
           console.log(error);
         });
     },
-    checkBackground() {
-      let icons = document.getElementsByClassName("icon");
-      for (let index = 0; index < icons.length; index++) {
-        const element = icons[index];
-        if (!element.style.background) {
-          if (this.coins[element.attributes("id")]) {
-            element.style.background =
-              this.coins[element.attributes("id")].logo;
+    lazyLoadCrypto($state){
+        this.$axios.$get(`https://api.finage.co.uk/list/cryptocurrency?apikey=${finageApiKey}&limit=50&page=${this.page}`)
+        .then(response => {
+          if (response.results.length) {
+            this.page++;
+            this.data = this.data.concat(response.results);            
+            $state.loaded();
+            if (this.page > 4) {
+              $state.complete();
+            }
+          } else {
+            $state.complete();
           }
-        }
-      }
+        })
+        .catch(error => {
+          console.log(error);
+        })
+      },
+    checkBackground() {
+      
+      const self = this;
+      document.querySelectorAll('.icon').forEach(function(icon) {
+            
+          if (!icon.style.backgroundImage) {
+            const cid = icon.getAttribute("id");
+            if (self.coins[cid]) {              
+              icon.style.backgroundImage  = ('url("'+self.coins[cid][0].logo+'")');
+              console.log('set', cid)
+            }
+          }
+      });
+      
     },
   },
   created() {
@@ -304,11 +332,11 @@ export default {
       this.mobileScreen = true;
     }
     this.fetCoinsData();
-    this.fetchCoins();
+    //this.fetchCoins();
   },
   mounted() {
-    window.addEventListener("scroll", this.checkBackground);
     this.checkBackground();
+    window.addEventListener("scroll", this.checkBackground);
   },
 };
 </script>
@@ -469,6 +497,9 @@ export default {
     display: inline-block;
     min-width: 28px;
     height: 28px;
+    background-size:     cover;                
+    background-repeat:   no-repeat;
+    background-position: center center;
   }
   .figures {
     display: inline-flex;
