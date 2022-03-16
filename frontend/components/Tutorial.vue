@@ -315,14 +315,12 @@ export default {
       
       const self = this;
       document.querySelectorAll('.icon').forEach(function(icon) {
-            
-          if (!window.getComputedStyle(icon).backgroundImage) {
-            const cid = icon.getAttribute("id");
-            if (self.coins[cid]) {              
-              icon.style.backgroundImage  = ('url("'+self.coins[cid][0].logo+'")');
-              console.log('set', cid)
-            }
+        if (window.getComputedStyle(icon).backgroundImage == "none") {
+          const cid = icon.getAttribute("id");
+          if (self.coins[cid]) {              
+            icon.style.backgroundImage  = ('url("'+self.coins[cid][0].logo+'")');
           }
+        }
       });
       
     },
@@ -335,8 +333,8 @@ export default {
     //this.fetchCoins();
   },
   mounted() {
-    this.checkBackground();
     window.addEventListener("scroll", this.checkBackground);
+    this.checkBackground();
   },
 };
 </script>
