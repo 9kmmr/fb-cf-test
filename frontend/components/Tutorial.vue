@@ -255,10 +255,6 @@ export default {
     fetCoinsData() {
       return this.$axios
         .$get(`${cloudFunctionAPIUrl}/coins`, {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
           json: true,
           gzip: true,
         })
