@@ -1,4 +1,5 @@
 const finageApiKey = process.env.FINAGE_API_KEY;
+const apiUrl = process.env.CLOUD_FUNCTION_API_URL;
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -6,6 +7,7 @@ export default {
   // Environment Variable
   env: {
     finageApiKey,
+    apiUrl
   },
   // Target: https://go.nuxtjs.dev/config-target
   target: 'static',

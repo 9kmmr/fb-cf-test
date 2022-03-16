@@ -222,7 +222,7 @@
 
 <script>
 const finageApiKey = process.env.finageApiKey;
-const cloudFunctionAPIUrl = process.env.CLOUD_FUNCTION_API_URL;
+const cloudFunctionAPIUrl = process.env.apiUrl;
 export default {
   name: "NuxtTutorial",
   props: {
