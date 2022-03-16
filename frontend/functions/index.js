@@ -4,25 +4,23 @@ require("dotenv").config();
 const cmc_api_key = process.env.CMC_KEY;
 const finage_api_key = process.env.FINAGE_API_KEY;
 
-const express = require("express");
-const app = express();
+exports.api =  functions.https('coins',(req, res) => {
 
-app.get("/test", (req, res) => {
-  res.status(200).send({
-    status: "ok",
-    message: "API TEST"
-  })
-})
-
-app.get("/coins", async (req, res) => {
-
-  let topcoins = await getTopCoins();
-  if (topcoins.length) {
-    let allCoinsData = await getCoinsData(topcoins.map(coin => coin.symbol.toUpperCase()).join());
-    res.status(200).send(allCoinsData);
+  res.set('Access-Control-Allow-Origin', '*');
+  if (req.method === 'OPTIONS') {
+    // Send response to OPTIONS requests
+    res.set('Access-Control-Allow-Methods', 'GET');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Max-Age', '3600');
+    res.status(204).send('');
+  } else {
+    let topcoins = await getTopCoins();
+    if (topcoins.length) {
+      let allCoinsData = await getCoinsData(topcoins.map(coin => coin.symbol.toUpperCase()).join());
+      res.status(200).send(allCoinsData);
+    }
   }
-
-});
+})
 
 async function getTopCoins() {
   try {
@@ -49,6 +47,3 @@ async function getCoinsData(symbols) {
   }
 }
 
-// module.exports = main;
-
-exports.api = functions.https.onRequest(app);
